@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "assets")
@@ -33,6 +34,9 @@ public class Asset {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assigned_to", referencedColumnName = "id")
     private User assignedTo;
+
+    @Column(name = "assigned_date")
+    private LocalDateTime assignedDate;
 
     public Long getId() {
         return id;
@@ -80,5 +84,13 @@ public class Asset {
 
     public void setAssignedTo(User assignedTo) {
         this.assignedTo = assignedTo;
+    }
+
+    public LocalDateTime getAssignedDate() {
+        return assignedDate;
+    }
+
+    public void setAssignedDate(LocalDateTime assignedDate) {
+        this.assignedDate = assignedDate;
     }
 }

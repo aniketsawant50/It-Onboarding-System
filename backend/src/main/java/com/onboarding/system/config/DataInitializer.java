@@ -18,6 +18,10 @@ public class DataInitializer {
     CommandLineRunner seedSuperAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             User user = userRepository.findByUsername(SUPER_ADMIN_USERNAME).orElseGet(User::new);
+            user.setFirstName("Super");
+            user.setLastName("Admin");
+            user.setContactNumber("9999999999");
+            user.setGender("Other");
             user.setName("Super Admin");
             user.setUsername(SUPER_ADMIN_USERNAME);
             user.setEmail("superadmin@itportal.local");

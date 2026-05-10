@@ -4,6 +4,7 @@ import Card from '../../components/UI/Card/Card';
 import Table from '../../components/UI/Table/Table';
 import MainLayout from '../../layouts/MainLayout';
 import { taskApi, userApi } from '../../services/api';
+import { formatDateTime } from '../../utils/formatters';
 import managerLinks from './managerLinks';
 import { formatStatus, getStatusTone } from './managerHelpers';
 import styles from '../Admin/Dashboard.module.css';
@@ -12,6 +13,7 @@ function ManagerTaskBoard() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [completionDates, setCompletionDates] = useState({});
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -23,6 +25,12 @@ function ManagerTaskBoard() {
       ]);
       setUsers(userData.filter((user) => user.role === 'EMPLOYEE'));
       setTasks(taskData);
+      setCompletionDates(
+        taskData.reduce((dates, task) => ({
+          ...dates,
+          [task.id]: task.completionDate || ''
+        }), {})
+      );
     } catch (loadError) {
       setError(loadError.response?.data?.message || 'Unable to load task board.');
     }
@@ -42,11 +50,20 @@ function ManagerTaskBoard() {
     [tasks]
   );
 
+  const handleCompletionDateChange = (taskId, value) => {
+    setCompletionDates((current) => ({ ...current, [taskId]: value }));
+  };
+
   const handleStatusUpdate = async (taskId, newStatus, taskTitle) => {
     setError('');
     setMessage('');
     try {
-      await taskApi.updateStatus(taskId, { status: newStatus });
+      const completionDate = completionDates[taskId] || null;
+      if (newStatus === 'COMPLETED' && !completionDate) {
+        setError('Completion date is required before marking a task completed.');
+        return;
+      }
+      await taskApi.updateStatus(taskId, { status: newStatus, completionDate });
       setMessage(`Task "${taskTitle}" marked as ${newStatus}.`);
       await loadBoard();
     } catch (actionError) {
@@ -68,6 +85,25 @@ function ManagerTaskBoard() {
         <span className={`${styles.chip} ${styles[getStatusTone(row.status)]}`}>
           {formatStatus(row.status)}
         </span>
+      )
+    },
+    {
+      key: 'taskCreatedDate',
+      header: 'Created Date',
+      render: (row) => formatDateTime(row.taskCreatedDate) || 'Not available'
+    },
+    {
+      key: 'completionDate',
+      header: 'Completion Date',
+      render: (row) => (
+        <input
+          className={styles.tableDateInput}
+          type="date"
+          value={completionDates[row.id] || ''}
+          min={row.taskCreatedDate ? row.taskCreatedDate.slice(0, 10) : undefined}
+          onChange={(event) => handleCompletionDateChange(row.id, event.target.value)}
+          aria-label={`Completion date for ${row.title}`}
+        />
       )
     },
     { key: 'description', header: 'Description' },

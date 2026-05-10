@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
@@ -30,6 +32,12 @@ public class Task {
 
     @Column(nullable = false)
     private String status;
+
+    @Column(name = "task_created_date")
+    private LocalDateTime taskCreatedDate;
+
+    @Column(name = "completion_date")
+    private LocalDate completionDate;
 
     public Long getId() {
         return id;
@@ -69,5 +77,21 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getTaskCreatedDate() {
+        return taskCreatedDate;
+    }
+
+    public void setTaskCreatedDate(LocalDateTime taskCreatedDate) {
+        this.taskCreatedDate = taskCreatedDate;
+    }
+
+    public LocalDate getCompletionDate() {
+        return completionDate;
+    }
+
+    public void setCompletionDate(LocalDate completionDate) {
+        this.completionDate = completionDate;
     }
 }

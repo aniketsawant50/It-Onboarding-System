@@ -2,6 +2,7 @@ package com.onboarding.system.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class TaskRequest {
 
@@ -16,6 +17,8 @@ public class TaskRequest {
 
     @NotBlank
     private String status;
+
+    private LocalDate completionDate;
 
     public String getTitle() {
         return title;
@@ -47,5 +50,13 @@ public class TaskRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDate getCompletionDate() {
+        return completionDate;
+    }
+
+    public void setCompletionDate(LocalDate completionDate) {
+        this.completionDate = completionDate;
     }
 }

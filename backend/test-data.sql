@@ -5,7 +5,10 @@
 SELECT 'Checking existing employees...' AS 'Status';
 
 -- View current users
-SELECT id, name, role, email FROM users WHERE role = 'EMPLOYEE' LIMIT 5;
+SELECT id, first_name, last_name, name, role, email, contact_number, gender, date_of_birth
+FROM users
+WHERE role = 'EMPLOYEE'
+LIMIT 5;
 
 -- To manually test:
 -- 1. Create an EMPLOYEE user via Admin Create Employee page
@@ -36,8 +39,8 @@ VALUES
   ('Monitor Dell', 'Monitor', 'DELL-MON-004', 'PENDING', 5);
 
 -- Record asset assignment history
-INSERT INTO asset_assignment_history (asset_id, assigned_to_id, previous_status, new_status, assignment_date, assigned_by, notes)
-SELECT id, assigned_to, 'NEW', 'PENDING', NOW(), 'ADMIN', 'Test asset created'
+INSERT INTO asset_assignment_history (asset_id, assigned_to_id, previous_status, new_status, assignment_date, assigned_date, assigned_by, notes)
+SELECT id, assigned_to, 'NEW', 'PENDING', NOW(), NOW(), 'ADMIN', 'Test asset created'
 FROM assets 
 WHERE assigned_to = 5 AND status = 'PENDING';
 */

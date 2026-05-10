@@ -27,7 +27,12 @@ public class UserService {
 
     public User createUser(CreateUserRequest request) {
         User user = new User();
-        user.setName(request.getName());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setContactNumber(request.getContactNumber());
+        user.setGender(request.getGender());
+        user.setName(resolveDisplayName(request));
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -62,11 +67,23 @@ public class UserService {
 
     public User updateCurrentUserProfile(Authentication authentication, UpdateProfileRequest request) {
         User user = getCurrentUser(authentication);
-        user.setName(request.getName());
+        if (userRepository.existsByEmailAndIdNot(request.getEmail(), user.getId())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
         user.setEmail(request.getEmail());
+        user.setContactNumber(request.getContactNumber());
+        user.setGender(request.getGender());
+        user.setDateOfBirth(request.getDateOfBirth());
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         return userRepository.save(user);
+    }
+
+    private String resolveDisplayName(CreateUserRequest request) {
+        if (request.getName() != null && !request.getName().isBlank()) {
+            return request.getName();
+        }
+        return (request.getFirstName() + " " + request.getLastName()).trim();
     }
 }

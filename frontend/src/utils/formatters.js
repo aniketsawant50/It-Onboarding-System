@@ -8,6 +8,7 @@
 export const formatDate = (date) => {
   if (!date) return '';
   const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return '';
   return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()}`;
 };
 
@@ -17,6 +18,7 @@ export const formatDate = (date) => {
 export const formatDateTime = (datetime) => {
   if (!datetime) return '';
   const d = new Date(datetime);
+  if (Number.isNaN(d.getTime())) return '';
   const date = formatDate(datetime);
   const time = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
   return `${date} ${time}`;

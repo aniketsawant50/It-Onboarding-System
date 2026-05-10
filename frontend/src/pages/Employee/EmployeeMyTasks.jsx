@@ -4,6 +4,7 @@ import Card from '../../components/UI/Card/Card';
 import Table from '../../components/UI/Table/Table';
 import MainLayout from '../../layouts/MainLayout';
 import { taskApi } from '../../services/api';
+import { formatDate, formatDateTime } from '../../utils/formatters';
 import employeeLinks from './employeeLinks';
 import { formatStatus, getStatusTone, getCurrentUserFromStorage } from './employeeHelpers';
 import styles from '../Admin/Dashboard.module.css';
@@ -51,6 +52,16 @@ function EmployeeMyTasks() {
           {formatStatus(row.status)}
         </span>
       )
+    },
+    {
+      key: 'taskCreatedDate',
+      header: 'Created Date',
+      render: (row) => formatDateTime(row.taskCreatedDate) || 'Not available'
+    },
+    {
+      key: 'completionDate',
+      header: 'Completion Date',
+      render: (row) => formatDate(row.completionDate) || 'Not set'
     },
     { key: 'description', header: 'Description' }
   ];

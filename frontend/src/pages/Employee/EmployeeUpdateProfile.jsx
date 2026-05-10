@@ -5,17 +5,23 @@ import Card from '../../components/UI/Card/Card';
 import Input from '../../components/UI/Input/Input';
 import MainLayout from '../../layouts/MainLayout';
 import { userApi } from '../../services/api';
+import { isNotEmpty, isValidEmail, isValidPhone } from '../../utils/validators';
 import employeeLinks from './employeeLinks';
 import styles from '../Admin/Dashboard.module.css';
+
+const genderOptions = ['Male', 'Female', 'Other'];
 
 function EmployeeUpdateProfile() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: '',
     email: '',
+    contactNumber: '',
+    dateOfBirth: '',
+    gender: '',
     password: '',
     confirmPassword: ''
   });
+  const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
@@ -27,8 +33,10 @@ function EmployeeUpdateProfile() {
         const { data } = await userApi.getCurrentUser();
         setForm((current) => ({
           ...current,
-          name: data.name || '',
-          email: data.email || ''
+          email: data.email || '',
+          contactNumber: data.contactNumber || '',
+          dateOfBirth: data.dateOfBirth || '',
+          gender: data.gender || ''
         }));
       } catch (loadError) {
         setError(loadError.response?.data?.message || 'Unable to load profile information.');
@@ -43,14 +51,37 @@ function EmployeeUpdateProfile() {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((current) => ({ ...current, [name]: value }));
+    setFieldErrors((current) => ({ ...current, [name]: '' }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (!isNotEmpty(form.email)) {
+      errors.email = 'Email is required.';
+    } else if (!isValidEmail(form.email)) {
+      errors.email = 'Enter a valid email address.';
+    }
+    if (!isNotEmpty(form.contactNumber)) {
+      errors.contactNumber = 'Contact number is required.';
+    } else if (!isValidPhone(form.contactNumber)) {
+      errors.contactNumber = 'Enter a valid contact number.';
+    }
+    if (!isNotEmpty(form.dateOfBirth)) errors.dateOfBirth = 'Date of birth is required.';
+    if (!isNotEmpty(form.gender)) errors.gender = 'Gender is required.';
+    if (form.password && form.password !== form.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match.';
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    // Validate passwords match if changing password
-    if (form.password && form.password !== form.confirmPassword) {
-      setError('Passwords do not match.');
+
+    if (!validateForm()) {
+      setError('Please fix the highlighted fields.');
       return;
     }
 
@@ -60,8 +91,10 @@ function EmployeeUpdateProfile() {
 
     try {
       const payload = {
-        name: form.name,
-        email: form.email
+        email: form.email,
+        contactNumber: form.contactNumber,
+        dateOfBirth: form.dateOfBirth,
+        gender: form.gender
       };
 
       if (form.password) {
@@ -105,20 +138,44 @@ function EmployeeUpdateProfile() {
       <Card title="Your Profile Information" subtitle="Update your personal and account details.">
         <form className={styles.formGrid} onSubmit={handleSubmit}>
           <Input 
-            label="Full Name" 
-            name="name" 
-            value={form.name} 
-            onChange={handleChange} 
-            required 
-          />
-          <Input 
             label="Email Address" 
             name="email" 
             type="email" 
             value={form.email} 
             onChange={handleChange} 
+            error={fieldErrors.email}
             required 
           />
+          <Input 
+            label="Contact Number" 
+            name="contactNumber" 
+            type="tel" 
+            value={form.contactNumber} 
+            onChange={handleChange} 
+            error={fieldErrors.contactNumber}
+            required 
+          />
+          <Input 
+            label="Date of Birth" 
+            name="dateOfBirth" 
+            type="date" 
+            value={form.dateOfBirth} 
+            onChange={handleChange} 
+            error={fieldErrors.dateOfBirth}
+            required 
+          />
+          <label className={styles.selectField}>
+            <span>Gender</span>
+            <select name="gender" value={form.gender} onChange={handleChange} required>
+              <option value="">Select gender</option>
+              {genderOptions.map((gender) => (
+                <option key={gender} value={gender}>
+                  {gender}
+                </option>
+              ))}
+            </select>
+            {fieldErrors.gender ? <p className={styles.error}>{fieldErrors.gender}</p> : null}
+          </label>
           <Input 
             label="New Password (optional)" 
             name="password" 
@@ -133,6 +190,7 @@ function EmployeeUpdateProfile() {
             type="password" 
             value={form.confirmPassword} 
             onChange={handleChange}
+            error={fieldErrors.confirmPassword}
             placeholder="Leave blank to keep current password"
           />
 

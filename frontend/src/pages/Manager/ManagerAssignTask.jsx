@@ -15,7 +15,8 @@ function ManagerAssignTask() {
     title: '',
     description: '',
     assignedTo: '',
-    status: 'PENDING'
+    status: 'PENDING',
+    completionDate: ''
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -44,8 +45,17 @@ function ManagerAssignTask() {
     setLoading(true);
     setMessage('');
     setError('');
+    if (form.status === 'COMPLETED' && !form.completionDate) {
+      setLoading(false);
+      setError('Completion date is required when status is COMPLETED.');
+      return;
+    }
     try {
-      const payload = { ...form, assignedTo: Number(form.assignedTo) };
+      const payload = {
+        ...form,
+        assignedTo: Number(form.assignedTo),
+        completionDate: form.completionDate || null
+      };
       const { data } = await taskApi.create(payload);
       const employee = users.find((user) => user.id === data.assignedTo?.id);
       setMessage(`Task "${data.title}" assigned to ${employee?.name || 'employee'} successfully.`);
@@ -53,7 +63,8 @@ function ManagerAssignTask() {
         title: '',
         description: '',
         assignedTo: '',
-        status: 'PENDING'
+        status: 'PENDING',
+        completionDate: ''
       });
       window.setTimeout(() => {
         navigate('/manager/task-board', { state: { refresh: Date.now() } });
@@ -107,6 +118,14 @@ function ManagerAssignTask() {
                 <option value="COMPLETED">COMPLETED</option>
               </select>
             </label>
+            <Input
+              label="Completion Date"
+              name="completionDate"
+              type="date"
+              value={form.completionDate}
+              onChange={handleChange}
+              required={form.status === 'COMPLETED'}
+            />
             {error ? <p className={styles.error}>{error}</p> : null}
             {message ? <p className={styles.success}>{message}</p> : null}
             <div className={styles.submitRow}>

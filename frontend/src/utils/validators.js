@@ -27,8 +27,8 @@ export const isValidPassword = (password) => {
  * Validate phone number format
  */
 export const isValidPhone = (phone) => {
-  const phoneRegex = /^\d{10}$|^\d{3}-\d{3}-\d{4}$/;
-  return phoneRegex.test(phone.replace(/\s+/g, ''));
+  const phoneRegex = /^[0-9+()\-\s]{10,20}$/;
+  return phoneRegex.test(phone);
 };
 
 /**

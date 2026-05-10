@@ -6,6 +6,7 @@ import com.onboarding.system.entity.AssetAssignmentHistory;
 import com.onboarding.system.entity.User;
 import com.onboarding.system.repository.AssetRepository;
 import com.onboarding.system.repository.AssetAssignmentHistoryRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,7 @@ public class AssetService {
         asset.setSerialNumber(request.getSerialNumber());
         asset.setStatus("PENDING");
         asset.setAssignedTo(userService.findById(request.getAssignedTo()));
+        asset.setAssignedDate(LocalDateTime.now());
         Asset savedAsset = assetRepository.save(asset);
 
         // Record history for asset creation

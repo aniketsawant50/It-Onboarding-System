@@ -4,7 +4,8 @@ import Button from '../../components/UI/Button/Button';
 import Card from '../../components/UI/Card/Card';
 import Input from '../../components/UI/Input/Input';
 import MainLayout from '../../layouts/MainLayout';
-import { assetApi, userApi } from '../../services/api';
+import { assetApi, assetHistoryApi, userApi } from '../../services/api';
+import { formatDateTime } from '../../utils/formatters';
 import adminLinks from './adminLinks';
 import styles from './Dashboard.module.css';
 
@@ -12,6 +13,7 @@ function AdminAssignAssets() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [assets, setAssets] = useState([]);
+  const [history, setHistory] = useState([]);
   const [form, setForm] = useState({ name: '', type: '', serialNumber: '', assignedTo: '' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -20,12 +22,14 @@ function AdminAssignAssets() {
   useEffect(() => {
     const load = async () => {
       try {
-        const [{ data: userData }, { data: assetData }] = await Promise.all([
+        const [{ data: userData }, { data: assetData }, { data: historyData }] = await Promise.all([
           userApi.getAll(),
-          assetApi.getAll()
+          assetApi.getAll(),
+          assetHistoryApi.getAll()
         ]);
         setUsers(userData.filter((user) => user.role !== 'ADMIN'));
         setAssets(assetData);
+        setHistory(historyData);
       } catch (loadError) {
         setError(loadError.response?.data?.message || 'Unable to load admin asset data.');
       }
@@ -48,6 +52,8 @@ function AdminAssignAssets() {
       const payload = { ...form, assignedTo: Number(form.assignedTo) };
       const { data } = await assetApi.create(payload);
       setAssets((current) => [...current, data]);
+      const { data: historyData } = await assetHistoryApi.getAll();
+      setHistory(historyData);
       setMessage(`Assigned ${data.name} successfully.`);
       setForm({ name: '', type: '', serialNumber: '', assignedTo: '' });
       window.setTimeout(() => {
@@ -91,12 +97,12 @@ function AdminAssignAssets() {
         </Card>
         <Card title="Recent Assignments" subtitle="Review the latest device and access allocations.">
           <ul className={styles.list}>
-            {assets.slice(-6).reverse().map((asset) => (
-              <li key={asset.id}>
-                {asset.name} - {asset.type} for {asset.assignedTo?.name || 'Assigned user'}
+            {history.slice(-6).reverse().map((entry) => (
+              <li key={entry.id}>
+                {entry.asset?.name || 'Asset'} for {entry.assignedTo?.name || 'Assigned user'} on {formatDateTime(entry.assignedDate || entry.assignmentDate)}
               </li>
             ))}
-            {!assets.length ? <li>No assets assigned yet.</li> : null}
+            {!history.length ? <li>No assets assigned yet.</li> : null}
           </ul>
         </Card>
       </div>

@@ -4,6 +4,7 @@ import Card from '../../components/UI/Card/Card';
 import Table from '../../components/UI/Table/Table';
 import MainLayout from '../../layouts/MainLayout';
 import { assetApi, userApi } from '../../services/api';
+import { formatDateTime } from '../../utils/formatters';
 import hrLinks from './hrLinks';
 import { formatStatus, getStatusTone } from './hrHelpers';
 import styles from '../Admin/Dashboard.module.css';
@@ -54,6 +55,11 @@ function HRAssetApprovals() {
       key: 'assignedTo',
       header: 'Employee',
       render: (row) => row.assignedTo?.name || 'Unassigned'
+    },
+    {
+      key: 'assignedDate',
+      header: 'Assigned Date',
+      render: (row) => formatDateTime(row.assignedDate) || 'Not available'
     },
     {
       key: 'status',

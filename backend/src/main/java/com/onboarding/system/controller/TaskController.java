@@ -7,6 +7,7 @@ import com.onboarding.system.service.TaskService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,13 +34,16 @@ public class TaskController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
-    public Task createTask(@Valid @RequestBody TaskRequest request) {
-        return taskService.createTask(request);
+    public Task createTask(@Valid @RequestBody TaskRequest request, Authentication authentication) {
+        return taskService.createTask(request, authentication);
     }
 
     @PutMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER', 'EMPLOYEE')")
-    public Task updateTaskStatus(@PathVariable Long id, @Valid @RequestBody UpdateTaskStatusRequest request) {
-        return taskService.updateTaskStatus(id, request.getStatus());
+    public Task updateTaskStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateTaskStatusRequest request,
+            Authentication authentication) {
+        return taskService.updateTaskStatus(id, request, authentication);
     }
 }

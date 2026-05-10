@@ -4,6 +4,7 @@ import Card from '../../components/UI/Card/Card';
 import Table from '../../components/UI/Table/Table';
 import MainLayout from '../../layouts/MainLayout';
 import { assetApi } from '../../services/api';
+import { formatDateTime } from '../../utils/formatters';
 import employeeLinks from './employeeLinks';
 import { getStatusTone, getCurrentUserFromStorage } from './employeeHelpers';
 import styles from '../Admin/Dashboard.module.css';
@@ -45,15 +46,18 @@ function EmployeeMyAssets() {
     { key: 'type', header: 'Type' },
     { key: 'serialNumber', header: 'Serial Number' },
     {
+      key: 'assignedDate',
+      header: 'Assigned Date',
+      render: (row) => formatDateTime(row.assignedDate) || 'Not available'
+    },
+    {
       key: 'status',
       header: 'Status',
       render: (row) => {
-        const statusColor = row.status === 'APPROVED' ? styles.success : 
-                          row.status === 'REJECTED' ? styles.danger : styles.warning;
         const statusText = row.status === 'APPROVED' ? 'Approved' :
                           row.status === 'REJECTED' ? 'Rejected' : 'Pending Approval';
         return (
-          <span className={`${styles.chip} ${statusColor}`}>
+          <span className={`${styles.chip} ${styles[getStatusTone(row.status)]}`}>
             {statusText}
           </span>
         );

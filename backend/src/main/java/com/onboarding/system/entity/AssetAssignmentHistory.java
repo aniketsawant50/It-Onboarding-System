@@ -36,6 +36,9 @@ public class AssetAssignmentHistory {
     @Column(name = "assignment_date")
     private LocalDateTime assignmentDate;
 
+    @Column(name = "assigned_date")
+    private LocalDateTime assignedDate;
+
     @Column(name = "assigned_by")
     private String assignedBy; // admin, hr, manager
 
@@ -48,7 +51,8 @@ public class AssetAssignmentHistory {
         this.assignedTo = assignedTo;
         this.previousStatus = previousStatus;
         this.newStatus = newStatus;
-        this.assignmentDate = LocalDateTime.now();
+        this.assignedDate = LocalDateTime.now();
+        this.assignmentDate = this.assignedDate;
         this.assignedBy = assignedBy;
         this.notes = notes;
     }
@@ -100,6 +104,14 @@ public class AssetAssignmentHistory {
 
     public void setAssignmentDate(LocalDateTime assignmentDate) {
         this.assignmentDate = assignmentDate;
+    }
+
+    public LocalDateTime getAssignedDate() {
+        return assignedDate;
+    }
+
+    public void setAssignedDate(LocalDateTime assignedDate) {
+        this.assignedDate = assignedDate;
     }
 
     public String getAssignedBy() {

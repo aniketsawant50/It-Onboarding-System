@@ -50,6 +50,12 @@ export const assetApi = {
   updateStatus: (id, payload) => api.put(`/assets/${id}/status`, payload)
 };
 
+export const assetHistoryApi = {
+  getAll: () => api.get('/asset-history'),
+  getByAsset: (assetId) => api.get(`/asset-history/asset/${assetId}`),
+  getByEmployee: (employeeId) => api.get(`/asset-history/employee/${employeeId}`)
+};
+
 export const trainingApi = {
   getAll: () => api.get('/training'),
   create: (payload) => api.post('/training', payload)
