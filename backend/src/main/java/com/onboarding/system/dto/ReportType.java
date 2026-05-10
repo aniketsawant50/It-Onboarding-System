@@ -1,0 +1,15 @@
+package com.onboarding.system.dto;
+
+public enum ReportType {
+    ALL_EMPLOYEES,
+    ONBOARDING_STATUS,
+    TASK_COMPLETION,
+    ASSET_ALLOCATION,
+    EMPLOYEE_ONBOARDING,
+    NEW_JOINERS,
+    PENDING_ONBOARDING,
+    TRAINING_PROGRESS,
+    TEAM_TASK,
+    EMPLOYEE_PERFORMANCE,
+    PERSONAL_TASK
+}

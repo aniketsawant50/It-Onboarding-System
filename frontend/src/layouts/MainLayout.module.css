@@ -1,0 +1,68 @@
+.shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+.content {
+  padding: 1rem 1.2rem 2rem;
+}
+
+.hero {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(21, 59, 116, 0.95), rgba(15, 118, 110, 0.88));
+  border-radius: 28px;
+  color: white;
+  display: flex;
+  margin: 0 1.5rem;
+  min-height: 180px;
+  padding: 1.8rem;
+}
+
+.hero h2 {
+  font-size: 2rem;
+  margin: 0.3rem 0 0;
+}
+
+.kicker {
+  letter-spacing: 0.12em;
+  margin: 0;
+  opacity: 0.78;
+  text-transform: uppercase;
+}
+
+.stats {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  margin: 1.5rem;
+}
+
+.panels {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin: 0 1.5rem;
+}
+
+.detail {
+  margin: 0 1.5rem;
+}
+
+@media (max-width: 920px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .content {
+    padding: 0 0 1.5rem;
+  }
+
+  .hero,
+  .stats,
+  .panels,
+  .detail {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}

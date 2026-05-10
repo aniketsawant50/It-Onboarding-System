@@ -1,0 +1,39 @@
+.navbar {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem;
+}
+
+.eyebrow {
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.navbar h1 {
+  font-size: 1.6rem;
+  margin: 0.15rem 0 0;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.actions p {
+  color: var(--muted);
+  margin: 0.2rem 0 0;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

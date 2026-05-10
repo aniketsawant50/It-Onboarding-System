@@ -1,0 +1,29 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.label {
+  color: var(--secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.input {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  outline: none;
+  padding: 0.9rem 1rem;
+}
+
+.input:focus {
+  border-color: rgba(15, 118, 110, 0.45);
+  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.1);
+}
+
+.error {
+  color: var(--danger);
+  font-size: 0.85rem;
+}

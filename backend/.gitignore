@@ -1,0 +1,36 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.bak
+release.properties
+*.jar
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*.iml
+*.iws
+eclipse.classpath
+eclipse.project
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment
+.env
+.env.local
+*.log
+
+# Application
+application-dev.properties
+application-prod.properties

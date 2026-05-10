@@ -1,0 +1,241 @@
+.label {
+  color: var(--muted);
+  margin: 0;
+}
+
+.value {
+  display: inline-block;
+  font-size: 2rem;
+  margin-top: 0.25rem;
+}
+
+.meta {
+  color: var(--muted);
+  margin: 0.4rem 0 0;
+}
+
+.statCard {
+  border-radius: 18px;
+  min-height: 120px;
+  padding: 0.2rem;
+  position: relative;
+}
+
+.statCard::after {
+  border-radius: 18px;
+  content: '';
+  inset: 0;
+  opacity: 0.08;
+  position: absolute;
+}
+
+.statPrimary::after {
+  background: linear-gradient(135deg, #0f766e, #1aa39c);
+}
+
+.statSecondary::after {
+  background: linear-gradient(135deg, #153b74, #3b82f6);
+}
+
+.statWarning::after {
+  background: linear-gradient(135deg, #d17f00, #f59e0b);
+}
+
+.statSuccess::after {
+  background: linear-gradient(135deg, #0c8f5d, #34d399);
+}
+
+.list {
+  color: var(--muted);
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.actions button {
+  background: rgba(15, 118, 110, 0.1);
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 999px;
+  color: var(--secondary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+}
+
+.formGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.selectField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.selectField span {
+  color: var(--secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.selectField select {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem 1rem;
+}
+
+.selectField textarea {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font: inherit;
+  padding: 0.9rem 1rem;
+  resize: vertical;
+}
+
+.submitRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-start;
+}
+
+.error {
+  color: var(--danger);
+  margin: 0;
+}
+
+.success {
+  color: var(--success);
+  margin: 0;
+}
+
+.adminGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.pulseList {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.pulseItem {
+  align-items: center;
+  background: linear-gradient(135deg, rgba(21, 59, 116, 0.08), rgba(15, 118, 110, 0.08));
+  border: 1px solid rgba(16, 35, 61, 0.08);
+  border-radius: 18px;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.pulseItem span {
+  color: var(--muted);
+}
+
+.pulseItem strong {
+  color: var(--secondary);
+  font-size: 1.15rem;
+}
+
+.tableActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tableButton {
+  background: rgba(15, 118, 110, 0.1);
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 999px;
+  color: var(--secondary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+}
+
+.tableButton:hover {
+  transform: translateY(-1px);
+}
+
+.tableButtonSecondary {
+  background: rgba(21, 59, 116, 0.08);
+  border-color: rgba(21, 59, 116, 0.16);
+}
+
+.tableButtonDanger {
+  background: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.18);
+  color: #be123c;
+}
+
+.chip {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.7rem;
+}
+
+.chipSuccess {
+  background: rgba(12, 143, 93, 0.12);
+  color: #0c8f5d;
+}
+
+.chipWarning {
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+}
+
+.chipInfo {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+}
+
+.chipMuted {
+  background: rgba(100, 116, 139, 0.12);
+  color: #475569;
+}
+
+.chipDanger {
+  background: rgba(225, 29, 72, 0.12);
+  color: #be123c;
+}
+
+.summaryGrid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.summaryTile {
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(21, 59, 116, 0.08));
+  border: 1px solid rgba(21, 59, 116, 0.1);
+  border-radius: 18px;
+  padding: 1rem;
+}
+
+.summaryTile p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.summaryTile strong {
+  color: var(--secondary);
+  display: block;
+  font-size: 1.4rem;
+  margin-top: 0.35rem;
+}

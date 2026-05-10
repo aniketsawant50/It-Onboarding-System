@@ -1,0 +1,47 @@
+.sidebar {
+  background: linear-gradient(180deg, #0d2f5d 0%, #0f766e 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 100vh;
+  padding: 1.5rem 1rem;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.brand span {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.link {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.9rem 1rem;
+}
+
+.link small {
+  opacity: 0.75;
+}
+
+.active {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+}

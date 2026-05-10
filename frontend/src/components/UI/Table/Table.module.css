@@ -1,0 +1,31 @@
+.wrapper {
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  border-bottom: 1px solid var(--border);
+  padding: 0.95rem 0.8rem;
+  text-align: left;
+}
+
+.table th {
+  color: var(--secondary);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.table td {
+  color: var(--muted);
+}
+
+.empty {
+  padding: 1.4rem 0.8rem;
+  text-align: center !important;
+}

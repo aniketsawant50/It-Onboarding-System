@@ -1,0 +1,29 @@
+frontend/node_modules/
+frontend/dist/
+backend/target/
+tools/apache-maven-3.9.9-bin.zip
+other files
+
+# Backend
+backend/target/
+*.class
+*.jar
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Environment
+.env
+.vscode/
+backend/target/
+frontend/node_modules/
+*.log
