@@ -30,8 +30,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'HR', 'MANAGER')")
-    public List<UserDto> getUsers() {
-        return userService.getAllUsers().stream()
+    public List<UserDto> getUsers(Authentication authentication) {
+        return userService.getUsersVisibleTo(authentication).stream()
                 .map(UserDto::fromEntity)
                 .toList();
     }

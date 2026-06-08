@@ -3,11 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import Card from '../../components/UI/Card/Card';
 import Table from '../../components/UI/Table/Table';
 import MainLayout from '../../layouts/MainLayout';
-import { assetApi, userApi } from '../../services/api';
+import { assetApi, hrOnboardingApi } from '../../services/api';
 import { formatDateTime } from '../../utils/formatters';
 import hrLinks from './hrLinks';
 import { formatStatus, getStatusTone } from './hrHelpers';
 import styles from '../Admin/Dashboard.module.css';
+
+function isPendingAssetStatus(status) {
+  const s = (status || '').toUpperCase();
+  return s === 'PENDING_APPROVAL' || s === 'PENDING';
+}
 
 function HRAssetApprovals() {
   const navigate = useNavigate();
@@ -28,25 +33,42 @@ function HRAssetApprovals() {
     loadAssets();
   }, []);
 
-  const handleDecision = async (asset, assetStatus, employeeStatus, successMessage) => {
+  const handleApprove = async (asset) => {
     setError('');
     setMessage('');
+    const employeeId = asset.assignedTo?.id;
+    if (!employeeId) {
+      setError('Asset is not assigned to an employee.');
+      return;
+    }
     try {
-      await assetApi.updateStatus(asset.id, { status: assetStatus });
-      if (asset.assignedTo?.id) {
-        await userApi.updateStatus(asset.assignedTo.id, { status: employeeStatus });
-      }
-      setMessage(successMessage);
+      await hrOnboardingApi.approveAsset(employeeId, asset.id);
+      setMessage(`Approved: ${asset.name}`);
       await loadAssets();
     } catch (actionError) {
-      setError(actionError.response?.data?.message || 'Unable to update the asset approval.');
+      setError(actionError.response?.data?.message || 'Unable to approve the asset.');
     }
   };
 
-  const pendingAssets = useMemo(
-    () => assets.filter((asset) => asset.status === 'PENDING'),
-    [assets]
-  );
+  const handleReject = async (asset) => {
+    setError('');
+    setMessage('');
+    const employeeId = asset.assignedTo?.id;
+    if (!employeeId) {
+      setError('Asset is not assigned to an employee.');
+      return;
+    }
+    const remarks = window.prompt('Optional remarks for rejection (saved in timeline):', '') || '';
+    try {
+      await hrOnboardingApi.rejectAsset(employeeId, asset.id, { remarks });
+      setMessage(`Rejected: ${asset.name}`);
+      await loadAssets();
+    } catch (actionError) {
+      setError(actionError.response?.data?.message || 'Unable to reject the asset.');
+    }
+  };
+
+  const pendingAssets = useMemo(() => assets.filter((a) => isPendingAssetStatus(a.status)), [assets]);
 
   const columns = [
     { key: 'name', header: 'Asset' },
@@ -58,86 +80,61 @@ function HRAssetApprovals() {
     },
     {
       key: 'assignedDate',
-      header: 'Assigned Date',
-      render: (row) => formatDateTime(row.assignedDate) || 'Not available'
+      header: 'Assigned date',
+      render: (row) => formatDateTime(row.assignedDate) || '—'
     },
     {
       key: 'status',
-      header: 'Approval Status',
+      header: 'Approval status',
       render: (row) => (
-        <span className={`${styles.chip} ${styles[getStatusTone(row.status)]}`}>
-          {formatStatus(row.status)}
-        </span>
+        <span className={`${styles.chip} ${styles[getStatusTone(row.status)]}`}>{formatStatus(row.status)}</span>
       )
     },
     {
       key: 'actions',
       header: 'Actions',
-      render: (row) => (
-        <div className={styles.tableActions}>
-          <button
-            className={styles.tableButton}
-            type="button"
-            onClick={() =>
-              handleDecision(
-                row,
-                'APPROVED',
-                'ASSET_APPROVED',
-                `${row.name} approved and linked onboarding stage updated.`
-              )
-            }
-          >
-            Approve
-          </button>
-          <button
-            className={`${styles.tableButton} ${styles.tableButtonDanger}`}
-            type="button"
-            onClick={() =>
-              handleDecision(
-                row,
-                'REJECTED',
-                'ASSET_REVIEW_REQUIRED',
-                `${row.name} sent back for correction.`
-              )
-            }
-          >
-            Reject
-          </button>
-        </div>
-      )
+      render: (row) =>
+        isPendingAssetStatus(row.status) ? (
+          <div className={styles.tableActions}>
+            <button className={styles.tableButton} type="button" onClick={() => handleApprove(row)}>
+              Approve
+            </button>
+            <button className={`${styles.tableButton} ${styles.tableButtonDanger}`} type="button" onClick={() => handleReject(row)}>
+              Reject
+            </button>
+          </div>
+        ) : (
+          <span className={`${styles.chip} ${styles.chipMuted}`}>No action</span>
+        )
     }
   ];
 
   return (
-    <MainLayout links={hrLinks} title="HR Asset Approvals">
+    <MainLayout links={hrLinks} title="HR asset approvals">
       <div className={styles.adminGrid}>
-        <Card title="Assigned Assets" subtitle="Approve the laptops and access packages created by Admin.">
+        <Card title="Assigned assets" subtitle="HR decisions are recorded on the employee timeline and reflected on the employee dashboard.">
           {error ? <p className={styles.error}>{error}</p> : null}
           {message ? <p className={styles.success}>{message}</p> : null}
           <Table columns={columns} rows={assets} emptyMessage="No employee assets have been assigned yet." />
         </Card>
-        <Card title="Approval Snapshot" subtitle="See where IT readiness stands before the manager handoff.">
+        <Card title="Snapshot" subtitle="Quick counts for your queue.">
           <div className={styles.summaryGrid}>
             <div className={styles.summaryTile}>
-              <p>Waiting Approval</p>
+              <p>Waiting approval</p>
               <strong>{pendingAssets.length}</strong>
             </div>
             <div className={styles.summaryTile}>
               <p>Approved</p>
-              <strong>{assets.filter((asset) => asset.status === 'APPROVED').length}</strong>
+              <strong>{assets.filter((a) => (a.status || '').toUpperCase() === 'APPROVED').length}</strong>
             </div>
             <div className={styles.summaryTile}>
-              <p>Returned</p>
-              <strong>{assets.filter((asset) => asset.status === 'REJECTED').length}</strong>
+              <p>Rejected</p>
+              <strong>{assets.filter((a) => (a.status || '').toUpperCase() === 'REJECTED').length}</strong>
             </div>
           </div>
           <div className={styles.submitRow}>
-            <button
-              className={styles.tableButton}
-              type="button"
-              onClick={() => navigate('/hr', { state: { refresh: Date.now() } })}
-            >
-              Back to HR Dashboard
+            <button className={styles.tableButton} type="button" onClick={() => navigate('/hr', { state: { refresh: Date.now() } })}>
+              Back to HR dashboard
             </button>
           </div>
         </Card>

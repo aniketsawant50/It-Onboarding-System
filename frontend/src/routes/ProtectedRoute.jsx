@@ -9,6 +9,12 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
+  if (user?.status === 'INACTIVE') {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to={`/${user.role.toLowerCase()}`} replace />;
   }

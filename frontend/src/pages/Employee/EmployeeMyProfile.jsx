@@ -17,7 +17,6 @@ function EmployeeMyProfile() {
     lastName: '',
     email: '',
     phone: '',
-    department: '',
     designation: '',
     joiningDate: ''
   });
@@ -33,7 +32,6 @@ function EmployeeMyProfile() {
           lastName: data.lastName || '',
           email: data.email || '',
           phone: data.phone || '',
-          department: data.department || '',
           designation: data.designation || '',
           joiningDate: data.joiningDate || ''
         });
@@ -132,18 +130,6 @@ function EmployeeMyProfile() {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Department</label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formData.department}
-                  onChange={handleChange}
-                  placeholder="Your department"
-                  disabled
-                />
-              </div>
-
-              <div className={styles.formGroup}>
                 <label>Designation</label>
                 <input
                   type="text"
@@ -198,10 +184,6 @@ function EmployeeMyProfile() {
               <span>{formData.phone || 'Not provided'}</span>
             </div>
             <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Department:</span>
-              <span>{formData.department}</span>
-            </div>
-            <div className={styles.infoRow}>
               <span className={styles.infoLabel}>Designation:</span>
               <span>{formData.designation}</span>
             </div>
@@ -214,8 +196,8 @@ function EmployeeMyProfile() {
 
         <Card title="Important Notes" subtitle="Information about your profile.">
           <ul className={styles.list}>
-            <li>Some fields (name, email, department, designation) are locked and managed by HR</li>
-            <li>Contact your HR department if you need to update locked fields</li>
+            <li>Some fields (name, email, designation) are locked and managed by HR</li>
+            <li>Contact HR if you need to update locked fields</li>
             <li>You can update your phone number to keep your contact information current</li>
             <li>Your profile information is visible to your manager and HR team</li>
             <li>Keep your information up to date for important company communications</li>

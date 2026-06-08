@@ -3,6 +3,7 @@ package com.onboarding.system.service;
 import com.onboarding.system.dto.AssetRequest;
 import com.onboarding.system.entity.Asset;
 import com.onboarding.system.entity.AssetAssignmentHistory;
+import com.onboarding.system.entity.Role;
 import com.onboarding.system.entity.User;
 import com.onboarding.system.repository.AssetRepository;
 import com.onboarding.system.repository.AssetAssignmentHistoryRepository;
@@ -30,7 +31,13 @@ public class AssetService {
 
         for (Asset asset : assets) {
             if (asset.getStatus() == null || asset.getStatus().isBlank()) {
-                asset.setStatus("PENDING");
+                boolean toEmployee = asset.getAssignedTo() != null && asset.getAssignedTo().getRole() == Role.EMPLOYEE;
+                asset.setStatus(toEmployee ? "PENDING_APPROVAL" : "PENDING");
+                requiresUpdate = true;
+            } else if (asset.getAssignedTo() != null
+                    && asset.getAssignedTo().getRole() == Role.EMPLOYEE
+                    && "PENDING".equalsIgnoreCase(asset.getStatus())) {
+                asset.setStatus("PENDING_APPROVAL");
                 requiresUpdate = true;
             }
         }
@@ -47,8 +54,10 @@ public class AssetService {
         asset.setName(request.getName());
         asset.setType(request.getType());
         asset.setSerialNumber(request.getSerialNumber());
-        asset.setStatus("PENDING");
-        asset.setAssignedTo(userService.findById(request.getAssignedTo()));
+        User assignee = userService.findById(request.getAssignedTo());
+        asset.setAssignedTo(assignee);
+        String initialStatus = assignee.getRole() == Role.EMPLOYEE ? "PENDING_APPROVAL" : "PENDING";
+        asset.setStatus(initialStatus);
         asset.setAssignedDate(LocalDateTime.now());
         Asset savedAsset = assetRepository.save(asset);
 
@@ -57,7 +66,7 @@ public class AssetService {
                 savedAsset,
                 savedAsset.getAssignedTo(),
                 "NEW",
-                "PENDING",
+                initialStatus,
                 "ADMIN",
                 "Asset created and assigned to employee"
         );
@@ -108,7 +117,7 @@ public class AssetService {
             // Ensure statuses are initialized
             userAssets.forEach(asset -> {
                 if (asset.getStatus() == null || asset.getStatus().isBlank()) {
-                    asset.setStatus("PENDING");
+                    asset.setStatus("PENDING_APPROVAL");
                 }
             });
             return userAssets;

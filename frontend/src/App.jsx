@@ -6,11 +6,14 @@ import AdminCreateEmployee from './pages/Admin/AdminCreateEmployee';
 import AdminAssignAssets from './pages/Admin/AdminAssignAssets';
 import AdminEmployees from './pages/Admin/AdminEmployees';
 import AdminRoles from './pages/Admin/AdminRoles';
+import AdminHrQueries from './pages/Admin/AdminHrQueries';
 import HRDashboard from './pages/HR/HRDashboard';
 import HREmployeeQueue from './pages/HR/HREmployeeQueue';
 import HRAssetApprovals from './pages/HR/HRAssetApprovals';
 import HRManagerHandoff from './pages/HR/HRManagerHandoff';
 import HROnboardingProgress from './pages/HR/HROnboardingProgress';
+import HREmployeeDetail from './pages/HR/HREmployeeDetail';
+import HRQueries from './pages/HR/HRQueries';
 import ManagerDashboard from './pages/Manager/ManagerDashboard';
 import ManagerTeamMembers from './pages/Manager/ManagerTeamMembers';
 import ManagerAssignTask from './pages/Manager/ManagerAssignTask';
@@ -67,6 +70,14 @@ function App() {
         }
       />
       <Route
+        path="/admin/hr-queries"
+        element={
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <AdminHrQueries />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/admin/roles"
         element={
           <ProtectedRoute allowedRoles={['ADMIN']}>
@@ -119,6 +130,22 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={['HR']}>
             <HROnboardingProgress />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/hr/queries"
+        element={
+          <ProtectedRoute allowedRoles={['HR']}>
+            <HRQueries />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/hr/employees/:id"
+        element={
+          <ProtectedRoute allowedRoles={['HR']}>
+            <HREmployeeDetail />
           </ProtectedRoute>
         }
       />

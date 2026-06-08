@@ -5,6 +5,7 @@ import com.onboarding.system.dto.LoginRequest;
 import com.onboarding.system.dto.LoginResponse;
 import com.onboarding.system.dto.UserDto;
 import com.onboarding.system.entity.User;
+import com.onboarding.system.onboarding.EmployeeLifecycleStatus;
 import com.onboarding.system.repository.UserRepository;
 import com.onboarding.system.security.JwtService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +33,13 @@ public class AuthService {
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Invalid username or password");
+        }
+
+        if (!EmployeeLifecycleStatus.isLoginAllowed(user.getStatus())) {
+            if (EmployeeLifecycleStatus.isDeactivated(user.getStatus())) {
+                throw new IllegalArgumentException("Your account has been deactivated. Please contact administrator.");
+            }
+            throw new IllegalArgumentException("Your account is not activated yet. Please contact HR.");
         }
 
         String token = jwtService.generateToken(user);

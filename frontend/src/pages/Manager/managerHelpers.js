@@ -12,13 +12,19 @@ export function getStatusTone(status) {
     case 'HR_APPROVED':
     case 'ASSET_APPROVED':
     case 'MANAGER_REVIEW':
+    case 'ACTIVE':
       return 'chipSuccess';
     case 'IN_PROGRESS':
     case 'ONBOARDING_IN_PROGRESS':
+    case 'HR_REVIEW':
       return 'chipInfo';
     case 'ASSIGNED':
     case 'PENDING':
+    case 'PENDING_HR_APPROVAL':
+    case 'PENDING_APPROVAL':
       return 'chipWarning';
+    case 'QUERY_TO_ADMIN':
+      return 'chipInfo';
     case 'REJECTED':
     case 'INACTIVE':
     case 'ASSET_REVIEW_REQUIRED':
@@ -28,7 +34,7 @@ export function getStatusTone(status) {
   }
 }
 
-export function buildTeamSnapshots(users, assets, trainings, tasks, currentManagerId) {
+export function buildTeamSnapshots(users, assets, trainings, tasks) {
   return users
     .filter((user) => user.role === 'EMPLOYEE')
     .map((employee) => {

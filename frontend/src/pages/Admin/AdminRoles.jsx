@@ -9,7 +9,7 @@ import adminLinks from './adminLinks';
 import styles from './Dashboard.module.css';
 
 const roleOptions = ['HR', 'MANAGER', 'EMPLOYEE'];
-const statusOptions = ['ACTIVE', 'PENDING', 'INACTIVE'];
+const statusOptions = ['ACTIVE', 'INACTIVE'];
 
 function AdminRoles() {
   const navigate = useNavigate();
@@ -65,10 +65,19 @@ function AdminRoles() {
   };
 
   const columns = [
+    { key: 'employeeId', header: 'Employee ID' },
     { key: 'name', header: 'Name' },
     { key: 'username', header: 'Username' },
     { key: 'role', header: 'Role' },
-    { key: 'status', header: 'Status' }
+    {
+      key: 'status',
+      header: 'Status',
+      render: (row) => (
+        <span className={`${styles.chip} ${row.status === 'INACTIVE' ? styles.chipDanger : styles.chipSuccess}`}>
+          {row.status}
+        </span>
+      )
+    }
   ];
 
   return (
@@ -82,7 +91,7 @@ function AdminRoles() {
                 <option value="">Choose user</option>
                 {users.filter((user) => user.role !== 'ADMIN').map((user) => (
                   <option key={user.id} value={user.id}>
-                    {user.name} ({user.username})
+                    {user.name} ({user.employeeId || user.username})
                   </option>
                 ))}
               </select>

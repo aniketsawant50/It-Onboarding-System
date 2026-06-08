@@ -6,14 +6,6 @@ import { userApi } from '../../services/api';
 import adminLinks from './adminLinks';
 import styles from './Dashboard.module.css';
 
-const columns = [
-  { key: 'name', header: 'Name' },
-  { key: 'username', header: 'Username' },
-  { key: 'email', header: 'Email' },
-  { key: 'role', header: 'Role' },
-  { key: 'status', header: 'Status' }
-];
-
 function AdminEmployees() {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
@@ -30,6 +22,24 @@ function AdminEmployees() {
 
     loadUsers();
   }, []);
+
+  const columns = [
+    { key: 'employeeId', header: 'Employee ID' },
+    { key: 'name', header: 'Name' },
+    { key: 'username', header: 'Username' },
+    { key: 'email', header: 'Personal Email' },
+    { key: 'organizationEmail', header: 'Organization Email' },
+    { key: 'role', header: 'Role' },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (row) => (
+        <span className={`${styles.chip} ${row.status === 'INACTIVE' ? styles.chipDanger : styles.chipSuccess}`}>
+          {row.status}
+        </span>
+      )
+    }
+  ];
 
   return (
     <MainLayout links={adminLinks} title="View All Employees">

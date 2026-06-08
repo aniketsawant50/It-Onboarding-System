@@ -20,7 +20,6 @@ function EmployeeMyAssets() {
     const loadAssets = async () => {
       try {
         const { data } = await assetApi.getAll();
-        // Filter assets assigned to current employee
         const myAssets = data.filter((asset) => asset.assignedTo?.id === currentUser?.id);
         setAssets(myAssets);
       } catch (loadError) {
@@ -36,12 +35,17 @@ function EmployeeMyAssets() {
   const assetStats = useMemo(() => {
     const total = assets.length;
     const approved = assets.filter((asset) => asset.status === 'APPROVED').length;
-    const pending = assets.filter((asset) => asset.status === 'PENDING' || asset.status === 'REJECTED').length;
+    const pending = assets.filter((asset) => ['PENDING', 'PENDING_APPROVAL'].includes(asset.status)).length;
 
     return { total, approved, pending };
   }, [assets]);
 
   const columns = [
+    {
+      key: 'employeeId',
+      header: 'Employee ID',
+      render: (row) => row.assignedTo?.employeeId || currentUser?.employeeId || 'N/A'
+    },
     { key: 'name', header: 'Asset Name' },
     { key: 'type', header: 'Type' },
     { key: 'serialNumber', header: 'Serial Number' },
@@ -70,7 +74,7 @@ function EmployeeMyAssets() {
       <div className={styles.adminGrid}>
         <Card title="My Assigned Equipment & Assets" subtitle="Equipment and assets assigned to you for your role.">
           {error ? <p className={styles.error}>{error}</p> : null}
-          <Table columns={columns} rows={assets} emptyMessage="No assets assigned yet. They will appear here when assigned by your manager." />
+          <Table columns={columns} rows={assets} emptyMessage="No assets assigned." />
         </Card>
         <Card title="Asset Overview" subtitle="Summary of your assigned assets.">
           <div className={styles.summaryGrid}>

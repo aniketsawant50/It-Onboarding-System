@@ -40,6 +40,16 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null);
+      setToken(null);
+    };
+
+    window.addEventListener('session-expired', handleSessionExpired);
+    return () => window.removeEventListener('session-expired', handleSessionExpired);
+  }, []);
+
   const login = async (credentials) => {
     try {
       clearStoredSession();
@@ -52,10 +62,13 @@ export function AuthProvider({ children }) {
       localStorage.setItem('user', JSON.stringify(data.user));
       return data.user;
     } catch (error) {
-      throw new Error(
-        error.response?.data?.message ||
-          'Unable to sign in. Make sure the backend is running on port 8084 and the frontend page is refreshed.'
-      );
+      const data = error.response?.data;
+      const message =
+        (data && typeof data === 'object' && data.message) ||
+        (typeof data === 'string' ? data : null) ||
+        error.message ||
+        'Unable to sign in. Make sure the backend is running on port 8084 and the frontend page is refreshed.';
+      throw new Error(message);
     }
   };
 

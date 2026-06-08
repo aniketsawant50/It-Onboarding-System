@@ -36,6 +36,8 @@ function ManagerTeamMembers() {
 
   useEffect(() => {
     loadTeam();
+    const intervalId = window.setInterval(loadTeam, 15000);
+    return () => window.clearInterval(intervalId);
   }, []);
 
   const teamRows = useMemo(
@@ -44,8 +46,10 @@ function ManagerTeamMembers() {
   );
 
   const columns = [
+    { key: 'employeeId', header: 'Employee ID' },
     { key: 'name', header: 'Employee Name' },
     { key: 'username', header: 'Username' },
+    { key: 'organizationEmail', header: 'Organization Email' },
     {
       key: 'status',
       header: 'Onboarding Stage',
@@ -95,12 +99,14 @@ function ManagerTeamMembers() {
               <strong>{teamRows.length}</strong>
             </div>
             <div className={styles.summaryTile}>
-              <p>In Manager Review</p>
-              <strong>{teamRows.filter((member) => member.status === 'MANAGER_REVIEW').length}</strong>
+              <p>Onboarding in progress</p>
+              <strong>
+                {teamRows.filter((member) => member.status && !['ACTIVE', 'INACTIVE', 'REJECTED'].includes(member.status)).length}
+              </strong>
             </div>
             <div className={styles.summaryTile}>
-              <p>Completed Onboarding</p>
-              <strong>{teamRows.filter((member) => member.status === 'COMPLETED').length}</strong>
+              <p>Active on team</p>
+              <strong>{teamRows.filter((member) => member.status === 'ACTIVE').length}</strong>
             </div>
             <div className={styles.summaryTile}>
               <p>Avg Completion Rate</p>

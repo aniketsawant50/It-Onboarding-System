@@ -34,6 +34,16 @@ public class CreateUserRequest {
     @NotBlank
     private String email;
 
+    @Email
+    @NotBlank
+    private String organizationEmail;
+
+    private String department;
+
+    private String jobTitle;
+
+    private LocalDate joiningDate;
+
     @NotBlank
     private String password;
 
@@ -105,6 +115,38 @@ public class CreateUserRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getOrganizationEmail() {
+        return organizationEmail;
+    }
+
+    public void setOrganizationEmail(String organizationEmail) {
+        this.organizationEmail = organizationEmail;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public LocalDate getJoiningDate() {
+        return joiningDate;
+    }
+
+    public void setJoiningDate(LocalDate joiningDate) {
+        this.joiningDate = joiningDate;
     }
 
     public String getPassword() {

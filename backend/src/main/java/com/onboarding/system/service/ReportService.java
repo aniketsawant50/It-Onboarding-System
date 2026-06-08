@@ -11,6 +11,7 @@ import com.onboarding.system.entity.Task;
 import com.onboarding.system.entity.TaskAssignmentHistory;
 import com.onboarding.system.entity.Training;
 import com.onboarding.system.entity.User;
+import com.onboarding.system.onboarding.EmployeeLifecycleStatus;
 import com.onboarding.system.repository.AssetAssignmentHistoryRepository;
 import com.onboarding.system.repository.AssetRepository;
 import com.onboarding.system.repository.TaskAssignmentHistoryRepository;
@@ -84,7 +85,7 @@ public class ReportService {
 
         if (request.getReportType() == ReportType.PENDING_ONBOARDING) {
             users = users.stream()
-                    .filter(user -> !"COMPLETED".equalsIgnoreCase(user.getStatus()))
+                    .filter(user -> !EmployeeLifecycleStatus.ACTIVE.name().equalsIgnoreCase(user.getStatus()))
                     .toList();
         }
         if (request.getReportType() == ReportType.NEW_JOINERS && request.getStartDate() != null && request.getEndDate() != null) {
@@ -93,13 +94,14 @@ public class ReportService {
             users = users.stream().filter(user -> user.getId() >= Math.max(minId, 1L)).toList();
         }
 
-        List<String> columns = List.of("Employee Id", "Name", "Username", "Email", "Role", "Status");
+        List<String> columns = List.of("Employee Id", "Name", "Username", "Personal Email", "Organization Email", "Role", "Status");
         List<ReportRowDto> rows = users.stream()
                 .map(user -> ReportRowDto.from(mapOf(
-                        "Employee Id", value(user.getId()),
+                        "Employee Id", value(user.getEmployeeId()),
                         "Name", value(user.getName()),
                         "Username", value(user.getUsername()),
-                        "Email", value(user.getEmail()),
+                        "Personal Email", value(user.getEmail()),
+                        "Organization Email", value(user.getOrganizationEmail()),
                         "Role", value(user.getRole()),
                         "Status", value(user.getStatus()))))
                 .toList();
@@ -121,11 +123,12 @@ public class ReportService {
                 .filter(task -> withinDateRange(getLatestTaskHistoryDate(task.getId()), request.getStartDate(), request.getEndDate()))
                 .toList();
 
-        List<String> columns = List.of("Task Id", "Title", "Employee", "Task Status", "Employee Status");
+        List<String> columns = List.of("Task Id", "Title", "Employee Id", "Employee", "Task Status", "Employee Status");
         List<ReportRowDto> rows = tasks.stream()
                 .map(task -> ReportRowDto.from(mapOf(
                         "Task Id", value(task.getId()),
                         "Title", value(task.getTitle()),
+                        "Employee Id", value(task.getAssignedTo().getEmployeeId()),
                         "Employee", value(task.getAssignedTo().getName()),
                         "Task Status", value(task.getStatus()),
                         "Employee Status", value(task.getAssignedTo().getStatus()))))
@@ -147,7 +150,7 @@ public class ReportService {
                 .filter(asset -> withinDateRange(getLatestAssetHistoryDate(asset.getId()), request.getStartDate(), request.getEndDate()))
                 .toList();
 
-        List<String> columns = List.of("Asset Id", "Asset Name", "Type", "Serial Number", "Asset Status", "Assigned Employee");
+        List<String> columns = List.of("Asset Id", "Asset Name", "Type", "Serial Number", "Asset Status", "Employee Id", "Assigned Employee");
         List<ReportRowDto> rows = assets.stream()
                 .map(asset -> ReportRowDto.from(mapOf(
                         "Asset Id", value(asset.getId()),
@@ -155,6 +158,7 @@ public class ReportService {
                         "Type", value(asset.getType()),
                         "Serial Number", value(asset.getSerialNumber()),
                         "Asset Status", value(asset.getStatus()),
+                        "Employee Id", value(asset.getAssignedTo().getEmployeeId()),
                         "Assigned Employee", value(asset.getAssignedTo().getName()))))
                 .toList();
 
@@ -174,11 +178,12 @@ public class ReportService {
                 .filter(training -> withinDateRange(training.getCompletedDate(), request.getStartDate(), request.getEndDate()))
                 .toList();
 
-        List<String> columns = List.of("Training Id", "Title", "Employee", "Completion Status", "Completed Date");
+        List<String> columns = List.of("Training Id", "Title", "Employee Id", "Employee", "Completion Status", "Completed Date");
         List<ReportRowDto> rows = trainings.stream()
                 .map(training -> ReportRowDto.from(mapOf(
                         "Training Id", value(training.getId()),
                         "Title", value(training.getTitle()),
+                        "Employee Id", value(training.getEmployee().getEmployeeId()),
                         "Employee", value(training.getEmployee().getName()),
                         "Completion Status", Boolean.TRUE.equals(training.getCompletionStatus()) ? "Completed" : "Pending",
                         "Completed Date", value(training.getCompletedDate()))))
@@ -192,6 +197,8 @@ public class ReportService {
             case ADMIN, HR -> userRepository.findAll();
             case MANAGER -> userRepository.findAll().stream()
                     .filter(user -> user.getRole() == Role.EMPLOYEE)
+                    .filter(user -> user.getReportingManager() != null
+                            && user.getReportingManager().getId().equals(currentUser.getId()))
                     .toList();
             case EMPLOYEE -> List.of(currentUser);
         };
@@ -289,7 +296,7 @@ public class ReportService {
             return "COMPLETED".equals(normalizedCurrent);
         }
         if ("PENDING".equals(normalizedFilter)) {
-            return !"COMPLETED".equals(normalizedCurrent);
+            return !EmployeeLifecycleStatus.ACTIVE.name().equalsIgnoreCase(normalizedCurrent);
         }
 
         return normalizedCurrent.equals(normalizedFilter);

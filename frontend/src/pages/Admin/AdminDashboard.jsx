@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Card from '../../components/UI/Card/Card';
 import MainLayout from '../../layouts/MainLayout';
-import { assetApi, taskApi, userApi } from '../../services/api';
+import { assetApi, taskApi, userApi, adminOnboardingApi } from '../../services/api';
 import adminLinks from './adminLinks';
 import styles from './Dashboard.module.css';
 
@@ -14,17 +14,21 @@ function AdminDashboard() {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState('');
 
+  const [hrQueryCount, setHrQueryCount] = useState(0);
+
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const [{ data: userData }, { data: assetData }, { data: taskData }] = await Promise.all([
+        const [{ data: userData }, { data: assetData }, { data: taskData }, { data: queries }] = await Promise.all([
           userApi.getAll(),
           assetApi.getAll(),
-          taskApi.getAll()
+          taskApi.getAll(),
+          adminOnboardingApi.listHrQueries()
         ]);
         setUsers(userData);
         setAssets(assetData);
         setTasks(taskData);
+        setHrQueryCount(Array.isArray(queries) ? queries.length : 0);
       } catch (loadError) {
         setError(loadError.response?.data?.message || 'Unable to load admin dashboard data.');
       }
@@ -36,7 +40,7 @@ function AdminDashboard() {
   const stats = useMemo(() => {
     const nonAdminUsers = users.filter((user) => user.role !== 'ADMIN');
     const activeEmployees = nonAdminUsers.filter((user) => user.status === 'ACTIVE').length;
-    const pendingApprovals = nonAdminUsers.filter((user) => user.status === 'PENDING').length;
+    const inactiveEmployees = nonAdminUsers.filter((user) => user.status === 'INACTIVE').length;
     const completedTasks = tasks.filter((task) => task.status?.toUpperCase() === 'COMPLETED').length;
     const completionRate = tasks.length ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
@@ -54,9 +58,9 @@ function AdminDashboard() {
         tone: 'statSecondary'
       },
       {
-        label: 'Pending Approvals',
-        value: String(pendingApprovals),
-        meta: pendingApprovals ? 'Requires admin review' : 'No waiting approvals',
+        label: 'Inactive Accounts',
+        value: String(inactiveEmployees),
+        meta: inactiveEmployees ? 'Inactive accounts blocked from access' : 'All accounts can access',
         tone: 'statWarning'
       },
       {
@@ -87,8 +91,8 @@ function AdminDashboard() {
             {error ? <p className={styles.error}>{error}</p> : null}
             <div className={styles.pulseList}>
               <div className={styles.pulseItem}>
-                <span>Accounts needing approval</span>
-                <strong>{stats[2].value}</strong>
+                <span>HR queries awaiting admin fix</span>
+                <strong>{hrQueryCount}</strong>
               </div>
               <div className={styles.pulseItem}>
                 <span>Assets already assigned</span>
@@ -115,13 +119,24 @@ function AdminDashboard() {
           <Card title="Asset Oversight" subtitle="Track assignment and device readiness.">
             <ul className={styles.list}>
               <li>Assign laptops, email IDs, and software bundles</li>
-              <li>Monitor utilization by department</li>
+              <li>Monitor employee onboarding activity and asset utilization</li>
               <li>Review pending provisioning requests</li>
             </ul>
             <div className={styles.actions}>
               <button type="button" onClick={() => navigate('/admin/assign-assets')}>Assign Asset</button>
               <button type="button" onClick={() => navigate('/admin/employees')}>Check Availability</button>
               <button type="button" onClick={() => navigate('/admin/employees')}>View Reports</button>
+            </div>
+          </Card>
+          <Card title="HR onboarding queries" subtitle="When HR sends a record back for corrections, resolve it here.">
+            <ul className={styles.list}>
+              <li>Update employee master data after an HR query</li>
+              <li>Resubmit to HR so verification can continue</li>
+            </ul>
+            <div className={styles.actions}>
+              <button type="button" onClick={() => navigate('/admin/hr-queries')}>
+                Open HR queries ({hrQueryCount})
+              </button>
             </div>
           </Card>
           <Card title="System Access" subtitle="Monitor platform-wide onboarding activity.">

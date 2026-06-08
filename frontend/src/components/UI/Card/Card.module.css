@@ -1,18 +1,21 @@
 .card {
   background: var(--surface);
-  backdrop-filter: blur(14px);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  box-shadow: var(--shadow);
-  padding: 1.4rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(16, 35, 61, 0.07);
+  padding: 1.25rem;
 }
 
 .header {
   margin-bottom: 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(16, 35, 61, 0.08);
 }
 
 .header h3 {
-  font-size: 1.05rem;
+  color: var(--secondary);
+  font-size: 1rem;
+  font-weight: 700;
   margin: 0;
 }
 

@@ -43,6 +43,11 @@ function EmployeeMyTasks() {
   }, [tasks]);
 
   const columns = [
+    {
+      key: 'employeeId',
+      header: 'Employee ID',
+      render: (row) => row.assignedTo?.employeeId || currentUser?.employeeId || 'N/A'
+    },
     { key: 'title', header: 'Task Title' },
     {
       key: 'status',

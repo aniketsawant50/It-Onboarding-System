@@ -43,6 +43,8 @@ function ManagerTeamProgress() {
 
   useEffect(() => {
     loadProgress();
+    const intervalId = window.setInterval(loadProgress, 15000);
+    return () => window.clearInterval(intervalId);
   }, []);
 
   const teamRows = useMemo(
@@ -78,6 +80,7 @@ function ManagerTeamProgress() {
   };
 
   const columns = [
+    { key: 'employeeId', header: 'Employee ID' },
     { key: 'name', header: 'Employee' },
     {
       key: 'status',
@@ -125,7 +128,7 @@ function ManagerTeamProgress() {
                 <option value="">Choose employee</option>
                 {teamRows.map((employee) => (
                   <option key={employee.id} value={employee.id}>
-                    {employee.name} ({formatStatus(employee.status)})
+                    {employee.name} ({employee.employeeId || employee.username})
                   </option>
                 ))}
               </select>
@@ -158,7 +161,7 @@ function ManagerTeamProgress() {
             <li><strong>MANAGER_REVIEW</strong>: Employee is in manager's care and completing assigned tasks</li>
             <li><strong>ONBOARDING_IN_PROGRESS</strong>: Activities ongoing with manager oversight</li>
             <li><strong>COMPLETED</strong>: Employee has successfully finished all onboarding requirements</li>
-            <li><strong>PENDING</strong>: Employee status awaiting department assignment</li>
+            <li><strong>PENDING</strong>: Employee is waiting for the next onboarding action</li>
           </ul>
           <div style={{ marginTop: '15px', padding: '10px', background: '#e8f5e9', borderRadius: '4px', fontSize: '13px', color: '#2e7d32' }}>
             💡 <strong>Tip:</strong> Update stages as your team members progress through their tasks and training. This keeps

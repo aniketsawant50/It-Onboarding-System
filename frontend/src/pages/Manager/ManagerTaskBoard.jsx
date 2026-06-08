@@ -45,7 +45,8 @@ function ManagerTaskBoard() {
       tasks.map((task) => ({
         ...task,
         assigneeName: task.assignedTo?.name || 'Unassigned',
-        assigneeUsername: task.assignedTo?.username || 'N/A'
+        assigneeUsername: task.assignedTo?.username || 'N/A',
+        assigneeEmployeeId: task.assignedTo?.employeeId || 'N/A'
       })),
     [tasks]
   );
@@ -76,7 +77,7 @@ function ManagerTaskBoard() {
     {
       key: 'assignedTo',
       header: 'Assigned To',
-      render: (row) => `${row.assigneeName} (${row.assigneeUsername})`
+      render: (row) => `${row.assigneeEmployeeId} - ${row.assigneeName} (${row.assigneeUsername})`
     },
     {
       key: 'status',

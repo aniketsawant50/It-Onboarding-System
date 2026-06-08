@@ -86,7 +86,7 @@ function ManagerAssignTask() {
               name="title"
               value={form.title}
               onChange={handleChange}
-              placeholder="e.g., Complete department orientation"
+              placeholder="e.g., Complete role orientation"
               required
             />
             <label className={styles.selectField}>
@@ -95,7 +95,7 @@ function ManagerAssignTask() {
                 <option value="">Select employee</option>
                 {users.map((user) => (
                   <option key={user.id} value={user.id}>
-                    {user.name} ({user.username})
+                    {user.name} ({user.employeeId || user.username})
                   </option>
                 ))}
               </select>

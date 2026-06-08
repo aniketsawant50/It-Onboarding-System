@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException exception) {
-        return buildResponse(HttpStatus.BAD_REQUEST, "Username or email already exists");
+        return buildResponse(HttpStatus.BAD_REQUEST, "Employee ID, username, personal email, or organization email already exists");
     }
 
     @ExceptionHandler(Exception.class)

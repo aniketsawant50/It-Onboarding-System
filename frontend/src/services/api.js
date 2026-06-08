@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8084/api'
+  baseURL: import.meta.env.VITE_API_URL || '/api'
 });
 
 api.interceptors.request.use((config) => {
@@ -19,6 +19,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      window.dispatchEvent(new Event('session-expired'));
     }
     return Promise.reject(error);
   }
@@ -67,6 +68,31 @@ export const reportsApi = {
     api.post('/reports/download', payload, {
       responseType: 'blob'
     })
+};
+
+export const hrOnboardingApi = {
+  dashboard: () => api.get('/hr/onboarding/dashboard'),
+  listEmployees: (params) => api.get('/hr/onboarding/employees', { params }),
+  getEmployee: (id) => api.get(`/hr/onboarding/employees/${id}`),
+  timeline: (id) => api.get(`/hr/onboarding/employees/${id}/timeline`),
+  audit: (id) => api.get(`/hr/onboarding/employees/${id}/audit`),
+  startReview: (id) => api.post(`/hr/onboarding/employees/${id}/start-review`),
+  approveVerification: (id) => api.post(`/hr/onboarding/employees/${id}/approve-verification`),
+  verifyEmployee: (id) => api.post(`/hr/onboarding/employees/${id}/verify`),
+  reject: (id, body) => api.post(`/hr/onboarding/employees/${id}/reject`, body),
+  queryToAdmin: (id, body) => api.post(`/hr/onboarding/employees/${id}/query-to-admin`, body),
+  assignManager: (id, body) => api.post(`/hr/onboarding/employees/${id}/assign-manager`, body),
+  activate: (id) => api.post(`/hr/onboarding/employees/${id}/activate`),
+  approveAsset: (employeeId, assetId) =>
+    api.post(`/hr/onboarding/employees/${employeeId}/assets/${assetId}/approve`),
+  rejectAsset: (employeeId, assetId, body) =>
+    api.post(`/hr/onboarding/employees/${employeeId}/assets/${assetId}/reject`, body)
+};
+
+export const adminOnboardingApi = {
+  listHrQueries: () => api.get('/admin/onboarding/hr-queries'),
+  updateEmployeeForQuery: (id, body) => api.put(`/admin/onboarding/employees/${id}/query-update`, body),
+  resubmitToHr: (id) => api.post(`/admin/onboarding/employees/${id}/resubmit-to-hr`)
 };
 
 export default api;

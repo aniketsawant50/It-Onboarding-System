@@ -16,8 +16,12 @@ export function getStatusTone(status) {
     case 'IN_PROGRESS':
     case 'ONBOARDING_IN_PROGRESS':
     case 'ASSIGNED':
+    case 'HR_REVIEW':
+    case 'QUERY_TO_ADMIN':
       return 'chipInfo';
     case 'PENDING':
+    case 'PENDING_HR_APPROVAL':
+    case 'PENDING_APPROVAL':
       return 'chipWarning';
     case 'REJECTED':
     case 'INACTIVE':

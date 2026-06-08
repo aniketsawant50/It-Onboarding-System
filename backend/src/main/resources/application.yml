@@ -1,0 +1,4 @@
+# Optional YAML overrides (merged with application.properties).
+application:
+  portal:
+    url: ${PORTAL_URL:http://localhost:5173}

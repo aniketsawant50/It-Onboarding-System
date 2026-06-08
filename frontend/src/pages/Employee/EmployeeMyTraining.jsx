@@ -41,6 +41,11 @@ function EmployeeMyTraining() {
   }, [trainings]);
 
   const columns = [
+    {
+      key: 'employeeId',
+      header: 'Employee ID',
+      render: () => currentUser?.employeeId || 'N/A'
+    },
     { key: 'title', header: 'Training Module' },
     { key: 'description', header: 'Description' },
     {

@@ -36,6 +36,8 @@ function ManagerDashboard() {
     };
 
     loadDashboard();
+    const intervalId = window.setInterval(loadDashboard, 15000);
+    return () => window.clearInterval(intervalId);
   }, [location.state?.refresh]);
 
   const teamSnapshots = useMemo(
@@ -46,8 +48,9 @@ function ManagerDashboard() {
   const stats = useMemo(() => {
     const teamMembers = teamSnapshots.length;
     const activeTasks = teamSnapshots.reduce((total, member) => total + member.activeTasks, 0);
-    const pendingApprovals = teamSnapshots.filter((member) => member.status === 'MANAGER_REVIEW')
-      .length;
+    const pendingApprovals = teamSnapshots.filter(
+      (member) => member.status && !['ACTIVE', 'INACTIVE', 'REJECTED'].includes(member.status)
+    ).length;
     const avgCompletion = teamMembers
       ? Math.round(teamSnapshots.reduce((total, member) => total + member.completionRate, 0) / teamMembers)
       : 0;

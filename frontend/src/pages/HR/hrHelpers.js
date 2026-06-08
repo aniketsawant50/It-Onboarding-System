@@ -1,12 +1,13 @@
-export const HR_STAGE_OPTIONS = [
-  'PENDING',
-  'HR_APPROVED',
-  'ASSET_APPROVED',
-  'ONBOARDING_IN_PROGRESS',
-  'MANAGER_REVIEW',
-  'COMPLETED',
-  'ASSET_REVIEW_REQUIRED'
+export const EMPLOYEE_LIFECYCLE_STATUSES = [
+  'PENDING_HR_APPROVAL',
+  'HR_REVIEW',
+  'QUERY_TO_ADMIN',
+  'ACTIVE',
+  'INACTIVE',
+  'REJECTED'
 ];
+
+export const HR_STAGE_OPTIONS = EMPLOYEE_LIFECYCLE_STATUSES;
 
 export function formatStatus(status) {
   return (status || 'PENDING')
@@ -22,12 +23,17 @@ export function getStatusTone(status) {
     case 'HR_APPROVED':
     case 'ASSET_APPROVED':
     case 'APPROVED':
+    case 'ACTIVE':
       return 'chipSuccess';
     case 'MANAGER_REVIEW':
     case 'ONBOARDING_IN_PROGRESS':
+    case 'HR_REVIEW':
+    case 'QUERY_TO_ADMIN':
       return 'chipInfo';
     case 'ASSIGNED':
     case 'PENDING':
+    case 'PENDING_HR_APPROVAL':
+    case 'PENDING_APPROVAL':
       return 'chipWarning';
     case 'REJECTED':
     case 'INACTIVE':

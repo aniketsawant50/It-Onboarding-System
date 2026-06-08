@@ -80,7 +80,7 @@ function AdminAssignAssets() {
                 <option value="">Select employee</option>
                 {users.map((user) => (
                   <option key={user.id} value={user.id}>
-                    {user.name} ({user.role})
+                    {user.name} ({user.employeeId || user.role})
                   </option>
                 ))}
               </select>
@@ -99,7 +99,7 @@ function AdminAssignAssets() {
           <ul className={styles.list}>
             {history.slice(-6).reverse().map((entry) => (
               <li key={entry.id}>
-                {entry.asset?.name || 'Asset'} for {entry.assignedTo?.name || 'Assigned user'} on {formatDateTime(entry.assignedDate || entry.assignmentDate)}
+                {entry.asset?.name || 'Asset'} for {entry.assignedTo?.employeeId || 'Employee'} - {entry.assignedTo?.name || 'Assigned user'} on {formatDateTime(entry.assignedDate || entry.assignmentDate)}
               </li>
             ))}
             {!history.length ? <li>No assets assigned yet.</li> : null}

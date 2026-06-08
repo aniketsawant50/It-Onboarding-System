@@ -4,6 +4,7 @@ import Table from '../../components/UI/Table/Table';
 import { useAuth } from '../../context/AuthContext';
 import MainLayout from '../../layouts/MainLayout';
 import { reportsApi, userApi } from '../../services/api';
+import { EMPLOYEE_LIFECYCLE_STATUSES } from '../HR/hrHelpers';
 import styles from './ReportsPage.module.css';
 
 const reportTypeByRole = {
@@ -263,8 +264,13 @@ function ReportsPage({ links }) {
                 Onboarding Status
                 <select name="onboardingStatus" value={filters.onboardingStatus} onChange={onFilterChange}>
                   <option value="">All</option>
-                  <option value="COMPLETED">Completed</option>
-                  <option value="PENDING">Pending</option>
+                  <option value="PENDING">Not ACTIVE (legacy filter)</option>
+                  <option value="COMPLETED">Completed (legacy)</option>
+                  {EMPLOYEE_LIFECYCLE_STATUSES.map((s) => (
+                    <option key={s} value={s}>
+                      {s.replaceAll('_', ' ')}
+                    </option>
+                  ))}
                 </select>
               </label>
             ) : null}
@@ -286,7 +292,7 @@ function ReportsPage({ links }) {
                   <option value="">All Employees</option>
                   {users.map((employee) => (
                     <option key={employee.id} value={employee.id}>
-                      {employee.name} ({employee.username})
+                      {employee.name} ({employee.employeeId || employee.username})
                     </option>
                   ))}
                 </select>

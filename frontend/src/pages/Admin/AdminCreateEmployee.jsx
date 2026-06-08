@@ -19,6 +19,7 @@ const initialForm = {
   gender: '',
   username: '',
   email: '',
+  organizationEmail: '',
   password: '',
   role: 'EMPLOYEE',
   status: 'ACTIVE'
@@ -56,6 +57,11 @@ function AdminCreateEmployee() {
     } else if (!isValidEmail(form.email)) {
       errors.email = 'Enter a valid email address.';
     }
+    if (!isNotEmpty(form.organizationEmail)) {
+      errors.organizationEmail = 'Organization email is required.';
+    } else if (!isValidEmail(form.organizationEmail)) {
+      errors.organizationEmail = 'Enter a valid organization email address.';
+    }
     if (!isNotEmpty(form.password)) errors.password = 'Temporary password is required.';
 
     setFieldErrors(errors);
@@ -79,7 +85,7 @@ function AdminCreateEmployee() {
         name: `${form.firstName.trim()} ${form.lastName.trim()}`
       };
       const { data } = await userApi.create(payload);
-      setMessage(`Created ${data.name} with role ${data.role}.`);
+      setMessage(`Created ${data.name} (${data.employeeId}) with role ${data.role}.`);
       setForm(initialForm);
       window.setTimeout(() => {
         navigate('/admin', { state: { refresh: Date.now() } });
@@ -116,7 +122,8 @@ function AdminCreateEmployee() {
             {fieldErrors.gender ? <p className={styles.error}>{fieldErrors.gender}</p> : null}
           </label>
           <Input label="Username" name="username" value={form.username} onChange={handleChange} error={fieldErrors.username} required />
-          <Input label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={fieldErrors.email} required />
+          <Input label="Personal Email" name="email" type="email" value={form.email} onChange={handleChange} error={fieldErrors.email} required />
+          <Input label="Organization Email" name="organizationEmail" type="email" value={form.organizationEmail} onChange={handleChange} error={fieldErrors.organizationEmail} required />
           <Input label="Temporary Password" name="password" type="password" value={form.password} onChange={handleChange} error={fieldErrors.password} required />
           <label className={styles.selectField}>
             <span>Role</span>
@@ -132,7 +139,6 @@ function AdminCreateEmployee() {
             <span>Status</span>
             <select name="status" value={form.status} onChange={handleChange}>
               <option value="ACTIVE">ACTIVE</option>
-              <option value="PENDING">PENDING</option>
               <option value="INACTIVE">INACTIVE</option>
             </select>
           </label>
